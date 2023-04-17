@@ -8,50 +8,44 @@ correctamente. Tenga en cuenta datos faltantes y duplicados.
 """
 import pandas as pd
 
-
 def clean_data():
+    dfcredito = pd.read_csv("solicitudes_credito.csv", sep=";")
 
-    df = pd.read_csv("solicitudes_credito.csv", sep=";")
+    dfcredito['sexo'] = dfcredito['sexo'].astype('string')
+    dfcredito['tipo_de_emprendimiento'] = dfcredito['tipo_de_emprendimiento'].astype('string')
+    dfcredito['idea_negocio'] = dfcredito['idea_negocio'].astype('string')
+    dfcredito['barrio'] = dfcredito['barrio'].astype('string')
+    dfcredito['comuna_ciudadano'] = dfcredito['comuna_ciudadano'].astype('int')
+    dfcredito['monto_del_credito'] = dfcredito['monto_del_credito'].astype('string')
+    dfcredito['línea_credito'] = dfcredito['línea_credito'].astype('string')
+    dfcredito['fecha1'] = pd.to_datetime(dfcredito['fecha_de_beneficio'], format='%Y/%m/%d', errors='coerce')
+    dfcredito['fecha2'] = pd.to_datetime(dfcredito['fecha_de_beneficio'], format='%d/%m/%Y', errors='coerce')
+    dfcredito['fecha_de_beneficio'] = dfcredito['fecha1'].fillna(dfcredito['fecha2'])
 
-    df['sexo'] = df['sexo'].astype('string')
-    df['tipo_de_emprendimiento'] = df['tipo_de_emprendimiento'].astype('string')
-    df['idea_negocio'] = df['idea_negocio'].astype('string')
-    df['barrio'] = df['barrio'].astype('string')
-    df['comuna_ciudadano'] = df['comuna_ciudadano'].astype('int')
-    df['monto_del_credito'] = df['monto_del_credito'].astype('string')
-    df['línea_credito'] = df['línea_credito'].astype('string')
-    df['fecha1'] = pd.to_datetime(df['fecha_de_beneficio'], format='%Y/%m/%d', errors='coerce')
-    df['fecha2'] = pd.to_datetime(df['fecha_de_beneficio'], format='%d/%m/%Y', errors='coerce')
-    df['fecha_de_beneficio'] = df['fecha1'].fillna(df['fecha2'])
+    dfcredito = dfcredito.drop(['fecha1'], axis=1)
+    dfcredito = dfcredito.drop(['fecha2'], axis=1)
 
-    df= df.drop(['fecha1'], axis=1)
-    df= df.drop(['fecha2'], axis=1)
-
-    df['sexo']=df['sexo'].str.lower()
-    df['tipo_de_emprendimiento']=df['tipo_de_emprendimiento'].str.lower()
-    df['idea_negocio']=df['idea_negocio'].str.lower()
-    df['barrio']=df['barrio'].str.lower()
-    df['línea_credito']=df['línea_credito'].str.lower()
-    df
-
-    df.dropna(inplace=True)
+    dfcredito['sexo'] = dfcredito['sexo'].str.lower()
+    dfcredito['tipo_de_emprendimiento'] = dfcredito['tipo_de_emprendimiento'].str.lower()
+    dfcredito['idea_negocio'] = dfcredito['idea_negocio'].str.lower()
+    dfcredito['barrio'] = dfcredito['barrio'].str.lower()
+    dfcredito['línea_credito'] = dfcredito['línea_credito'].str.lower()
     
 
-    df["idea_negocio"] = df["idea_negocio"].str.replace("_", " ")
-    df["idea_negocio"] = df["idea_negocio"].str.replace("-", " ")
-    df["barrio"] = df["barrio"].str.replace("_", " ")
-    df["barrio"] = df["barrio"].str.replace("-", " ")
-    df["línea_credito"] = df["línea_credito"].str.replace("_", " ")
-    df["línea_credito"] = df["línea_credito"].str.replace("-", " ")
+    dfcredito.dropna(inplace=True)
+    
+    dfcredito["idea_negocio"] = dfcredito["idea_negocio"].str.replace("_", " ")
+    dfcredito["idea_negocio"] = dfcredito["idea_negocio"].str.replace("-", " ")
+    dfcredito["barrio"] = dfcredito["barrio"].str.replace("_", " ")
+    dfcredito["barrio"] = dfcredito["barrio"].str.replace("-", " ")
+    dfcredito["línea_credito"] = dfcredito["línea_credito"].str.replace("_", " ")
+    dfcredito["línea_credito"] = dfcredito["línea_credito"].str.replace("-", " ")
 
 
-
-    df['monto_del_credito'] = df['monto_del_credito'].replace('[\$,]', '', regex=True).astype(float)
+    dfcredito['monto_del_credito'] = dfcredito['monto_del_credito'].replace('[\$,]', '', regex=True).astype(float)
     
 
-    df= df.drop(['Unnamed: 0'], axis=1)
-    df = df.drop_duplicates()
-    
+    dfcredito = dfcredito.drop(['Unnamed: 0'], axis=1)
+    dfcredito = dfcredito.drop_duplicates()
 
-   
-    return df
+    return dfcredito
